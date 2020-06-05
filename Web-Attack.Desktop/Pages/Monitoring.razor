@@ -1,0 +1,94 @@
+﻿@page "/monitoring"
+
+
+@using Web_Attack.Common.Common
+@using Microsoft.AspNetCore.SignalR.Client
+@using Newtonsoft.Json
+<h3>Monitoring</h3>
+
+@inject HttpClient Http
+@inject AdminService adminService
+
+<h1>SignalR Admin Dashboard</h1>
+<button class="btn btn-success" @onclick="async () => await ConnectToServer()" disabled="@isConnected">Start Application</button>
+
+<h3>Connection Status: @connectionStatus</h3>
+<div class="row">
+    <div class="col-md-6">
+        <div class="col-md-6 col-sm-12 p-4">
+            <RadzenChart>
+                <RadzenPieSeries Data="@totalRequest" CategoryProperty="Method" ValueProperty="Count">
+                    <TooltipTemplate>
+                        <div class="rz-donut-content">
+                            <div>Total</div>
+                            <div>Request</div>
+                        </div>
+                    </TooltipTemplate>
+                </RadzenPieSeries>
+            </RadzenChart>
+        </div>
+    </div>
+</div>
+<RadzenGrid AllowFiltering="true" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+            AllowSorting="true" Data="@notifications" TItem="RequestStream" ColumnWidth="200px">
+    <Columns>
+        <RadzenGridColumn TItem="RequestStream" Property="CreatedAtUTC" Title="Occurred Time" />
+        <RadzenGridColumn TItem="RequestStream" Property="Method" Title="Method" />
+        <RadzenGridColumn TItem="RequestStream" Property="Path" Title="Path" />
+        <RadzenGridColumn TItem="RequestStream" Property="StatusCode" Title="Status" />
+        <RadzenGridColumn TItem="RequestStream" Property="Query" Title="Query Parameter" />
+        <RadzenGridColumn TItem="RequestStream" Property="RequestPayload" Title="Request Payload" />
+
+
+    </Columns>
+</RadzenGrid>
+
+@code {
+
+    string url = "https://webattackapi.azurewebsites.net/notificationhub";
+
+    HubConnection _connection = null;
+    bool isConnected = false;
+    string connectionStatus = "Closed";
+
+    readonly List<RequestStream> notifications = new List<RequestStream>();
+    List<TotalRequestDto> totalRequest = new List<TotalRequestDto>();
+    List<WeeklyRequest> weeklyRequests = new List<WeeklyRequest>();
+    private async Task ConnectToServer()
+    {
+        _connection =  new HubConnectionBuilder()
+            .WithUrl("https://webattackapi.azurewebsites.net/notificationhub")
+            .Build();
+
+        await _connection.StartAsync();
+        isConnected = true;
+        connectionStatus = "Monitoring Start !!";
+
+        _connection.Closed += async (s) =>
+        {
+            isConnected = false;
+            connectionStatus = "Disconnected !";
+            await _connection.StartAsync();
+            isConnected = true;
+        };
+
+        _connection.On<string>("notification", m =>
+        {
+            var stream = JsonConvert.DeserializeObject<RequestStream>(m);
+
+            notifications.Add(stream);
+            StateHasChanged();
+        });
+    }
+
+    //protected override async Task OnInitializedAsync()
+    //{
+    //    totalRequest = await adminService.GetRequestCard();
+    //    weeklyRequests = await adminService.GetWeeklyRequests();
+    //}
+
+    bool smooth = false;
+
+
+
+}

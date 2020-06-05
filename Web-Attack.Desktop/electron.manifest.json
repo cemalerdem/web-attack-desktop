@@ -1,0 +1,34 @@
+{
+  "executable": "Web-Attack.Desktop",
+  "splashscreen": {
+    "imageFile": ""
+  },
+  "name": "Web-Attack.Desktop",
+  "author": "",
+  "singleInstance": false,
+  "build": {
+    "appId": "com.Web-Attack.Desktop.app",
+    "productName": "Web-Attack.Desktop",
+    "copyright": "Copyright © 2020",
+    "buildVersion": "1.0.0",
+    "compression": "maximum",
+    "directories": {
+      "output": "../../../bin/Desktop"
+    },
+    "extraResources": [
+      {
+        "from": "./bin",
+        "to": "bin",
+        "filter": ["**/*"]
+      }
+    ],
+    "files": [
+      {
+        "from": "./ElectronHostHook/node_modules",
+        "to": "ElectronHostHook/node_modules",
+        "filter": ["**/*"]
+      },
+      "**/*"
+    ]
+  }
+}

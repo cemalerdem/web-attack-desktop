@@ -1,0 +1,25 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <RootNamespace>Web_Attack.Desktop</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Blazored.LocalStorage" Version="2.1.6" />
+    <PackageReference Include="ElectronNET.API" Version="8.31.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Authorization" Version="3.1.4" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="3.1.4" />
+    <PackageReference Include="Microsoft.AspNetCore.SignalR" Version="1.1.0" />
+    <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="3.1.4" />
+    <PackageReference Include="Radzen.Blazor" Version="2.9.10" />
+    <PackageReference Include="RestSharp" Version="106.11.4" />
+    <PackageReference Include="System.Text.Json" Version="4.7.2" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Web-Attack.Common\Web-Attack.Common.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Update="electron.manifest.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+</Project>
